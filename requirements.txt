@@ -1,0 +1,57 @@
+# ספריות נדרשות לבוט טלגרם לניהול משימות
+
+# ספריות בסיסיות
+python-telegram-bot==20.7
+pytz==2023.3
+# sqlite3 נכלל ב-Python
+
+# ניהול הגדרות וסביבה
+python-dotenv==1.0.0
+
+# ספריות לתכונות מתקדמות
+matplotlib==3.8.2          # גרפים וויזואליזציה
+seaborn==0.13.0            # גרפים מתקדמים
+pandas==2.1.4              # ניתוח נתונים
+numpy==1.24.4              # חישובים מתמטיים
+
+# עיבוד שפה טבעית (אופציונלי)
+nltk==3.8.1                # עיבוד טקסט
+scikit-learn==1.3.2        # למידת מכונה
+
+# ספריות ווב (לתכונות עתידיות)
+fastapi==0.104.1           # API server
+uvicorn==0.24.0            # ASGI server
+jinja2==3.1.2              # תבניות HTML
+
+# עבודה עם תאריכים ו-JSON
+python-dateutil==2.8.2
+ujson==5.8.0               # JSON מהיר יותר
+
+# אבטחה והצפנה
+cryptography==41.0.7       # הצפנה
+bcrypt==4.1.2              # האשינג סיסמאות
+
+# לוגים מתקדמים
+colorlog==6.8.0            # לוגים צבעוניים
+loguru==0.7.2              # מערכת לוגים מתקדמת
+
+# בדיקות ופיתוח
+pytest==7.4.3
+pytest-asyncio==0.22.0
+pytest-cov==4.1.0         # כיסוי בדיקות
+black==23.12.0             # עיצוב קוד
+flake8==6.1.0              # בדיקת איכות קוד
+mypy==1.8.0                # בדיקת טיפוסים
+
+# גיבויים וענן (אופציונלי)
+boto3==1.34.0              # AWS SDK
+google-cloud-storage==2.10.0  # Google Cloud
+
+# מעקב ומוניטור (אופציונלי)
+prometheus-client==0.19.0  # מדדים
+sentry-sdk==1.39.2         # מעקב שגיאות
+
+# אינטגרציות (אופציונלי)
+requests==2.31.0          # HTTP requests
+aiohttp==3.9.1             # HTTP async
+google-api-python-client==2.111.0  # Google APIs
