@@ -152,7 +152,7 @@ class TestingConfig(Config):
     """הגדרות לבדיקות"""
     LOG_LEVEL = 'ERROR'
     DATABASE_NAME = ':memory:'  # מסד נתונים זמני בזיכרון
-    ENABLE_REMINDERS = False
+    Advanced.ENABLE_REMINDERS = False
 
 # בחירת הגדרות לפי משתנה סביבה
 ENV = os.getenv('BOT_ENV', 'development').lower()
