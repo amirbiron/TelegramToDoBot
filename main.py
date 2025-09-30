@@ -14,6 +14,7 @@ import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
 import pytz
+from config import config
 
 # הגדרת לוגים
 logging.basicConfig(
@@ -32,10 +33,11 @@ class TodoBot:
         self.application = Application.builder().token(token).build()
         self.user_states: Dict[int, str] = {}
         self.pending_tasks: Dict[int, Dict] = {}
+        self.db_name = config.DATABASE_NAME
         
     def init_database(self):
         """יצירת מסד הנתונים והטבלאות"""
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
         
         # טבלת משימות
@@ -82,7 +84,7 @@ class TodoBot:
         
     def get_user_categories(self, user_id: int) -> List[tuple]:
         """קבלת קטגוריות של משתמש"""
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
         
         cursor.execute('''
@@ -97,7 +99,7 @@ class TodoBot:
         
     def add_category(self, user_id: int, name: str, emoji: str = '📂'):
         """הוספת קטגוריה חדשה"""
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
         
         try:
@@ -114,7 +116,7 @@ class TodoBot:
             
     def add_task(self, user_id: int, content: str, category: str = 'כללי'):
         """הוספת משימה חדשה"""
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
         
         cursor.execute('''
@@ -129,7 +131,7 @@ class TodoBot:
         
     def get_tasks(self, user_id: int, category: str = None, status: str = 'open') -> List[tuple]:
         """קבלת משימות לפי קטגוריה וסטטוס"""
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
         
         if category:
@@ -153,7 +155,7 @@ class TodoBot:
         
     def update_task_status(self, task_id: int, user_id: int, status: str):
         """עדכון סטטוס משימה"""
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
         
         cursor.execute('''
@@ -169,7 +171,7 @@ class TodoBot:
         
     def delete_task(self, task_id: int, user_id: int):
         """מחיקת משימה"""
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
         
         cursor.execute('''
@@ -184,7 +186,7 @@ class TodoBot:
         
     def get_task_summary(self, user_id: int) -> Dict:
         """קבלת סיכום משימות לפי קטגוריה"""
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
         
         cursor.execute('''
