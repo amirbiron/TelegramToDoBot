@@ -227,6 +227,8 @@ def main():
     parser.add_argument('--no-enhanced', action='store_true', help='ביטול תכונות מתקדמות')
     parser.add_argument('--create-service', action='store_true', help='יצירת קובץ שירות systemd')
     parser.add_argument('--token', type=str, help='טוקן בוט טלגרם')
+    parser.add_argument('--webhook', action='store_true', help='הפעלת מצב Webhook (מאזין ל-$PORT)')
+    parser.add_argument('--polling', action='store_true', help='כפיית מצב Polling (מתעלם מ-$PORT)')
     
     args = parser.parse_args()
     
@@ -260,9 +262,31 @@ def main():
     enable_enhanced = not args.no_enhanced
     bot = AdvancedTodoBot(token, enable_enhanced_features=enable_enhanced)
     
+    # בחירת מצב הרצה: Webhook כאשר מוגדר PORT (Render) אלא אם נכפה polling
+    port_env = os.getenv('PORT')
+    use_webhook = args.webhook or (port_env is not None and not args.polling)
+
     # הרצת הבוט
     try:
-        bot.run_with_monitoring()
+        if use_webhook:
+            port = int(port_env or os.getenv('WEBHOOK_PORT', '10000'))
+            url_path = os.getenv('WEBHOOK_PATH', token)
+            external_url = os.getenv('WEBHOOK_URL') or os.getenv('RENDER_EXTERNAL_URL')
+            webhook_url = None
+            if external_url:
+                external_url = external_url.rstrip('/')
+                webhook_url = f"{external_url}/{url_path}"
+
+            print("🤖 מתחיל בוט במצב Webhook...")
+            print(f"🛰 מאזין על 0.0.0.0:{port} | path=/{url_path}")
+            if webhook_url:
+                print(f"🌐 Webhook URL: {webhook_url}")
+            else:
+                print("⚠️ לא הוגדרה כתובת WEBHOOK_URL/RENDER_EXTERNAL_URL — השרת יאזין מקומית בלבד")
+
+            bot.run_webhook(port=port, url_path=url_path, webhook_url=webhook_url)
+        else:
+            bot.run_with_monitoring()
         return 0
     except Exception as e:
         print(f"❌ שגיאה בהפעלת הבוט: {e}")

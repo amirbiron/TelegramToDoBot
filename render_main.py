@@ -91,10 +91,28 @@ def main():
     try:
         bot = TodoBot(token)
         logger.info("🤖 בוט נוצר בהצלחה")
-        
-        # הפעלת הבוט
-        logger.info("🎯 מתחיל polling...")
-        bot.run()
+
+        # הכנת פרמטרים ל-Webhook
+        port = int(os.getenv('PORT', '10000'))
+        # מסלול ברירת מחדל: השתמש בטוקן כדי למנוע קריאות אקראיות
+        url_path = os.getenv('WEBHOOK_PATH', token)
+
+        # קביעת כתובת ה-Webhook החיצונית
+        external_url = os.getenv('WEBHOOK_URL') or os.getenv('RENDER_EXTERNAL_URL')
+        webhook_url = None
+        if external_url:
+            # הסרת "/" סופי אם קיים
+            external_url = external_url.rstrip('/')
+            webhook_url = f"{external_url}/{url_path}"
+
+        logger.info(f"🎯 מתחיל Webhook על פורט {port}, path=/{url_path}")
+        if webhook_url:
+            logger.info(f"🌐 Webhook URL יוגדר ל: {webhook_url}")
+        else:
+            logger.warning("⚠️ לא הוגדר WEBHOOK_URL/RENDER_EXTERNAL_URL — השרת יאזין אך Telegram לא יקבל כתובת לעדכונים.")
+
+        # הפעלת הבוט במצב Webhook (מאזין ל-0.0.0.0:$PORT)
+        bot.run_webhook(port=port, url_path=url_path, webhook_url=webhook_url)
         
     except KeyboardInterrupt:
         logger.info("🛑 הבוט הופסק על ידי משתמש")

@@ -11,14 +11,14 @@
 
 ---
 
-## 📋 שלבי הפריסה ל-Render (5 דקות!)
+## 📋 שלבי הפריסה ל-Render (Webhook)
 
 ### שלב 1: הכנת הקבצים ✅
 
 **הקבצים הנדרשים כבר מוכנים:**
-- `render_main.py` - גרסה מותאמת ל-Render
-- `requirements_render.txt` - ספריות מינימליות
-- `main.py` - הבוט המקורי שלך
+- `render_main.py` - מפעיל את הבוט במצב Webhook ומאזין ל-$PORT
+- `requirements.txt` - כל הספריות הנחוצות
+- `main.py` - לוגיקת הבוט
 
 ### שלב 2: העלאה ל-GitHub
 
@@ -46,13 +46,15 @@ git push -u origin main
    ```
    Name: telegram-todo-bot (או כל שם שתרצה)
    Environment: Python 3
-   Build Command: pip install -r requirements_render.txt
+   Build Command: pip install -r requirements.txt
    Start Command: python render_main.py
    ```
 
-5. **הוסף משתנה סביבה:**
-   - Key: `TELEGRAM_BOT_TOKEN`
-   - Value: הטוקן שקיבלת מ-@BotFather
+5. **הוסף משתני סביבה:**
+   - `TELEGRAM_BOT_TOKEN` = הטוקן שקיבלת מ-@BotFather
+   - אופציונלי: `WEBHOOK_PATH` = מסלול ה-Webhook (ברירת מחדל: הטוקן)
+   - אופציונלי: `WEBHOOK_URL` = כתובת חיצונית מלאה ל-Telegram
+     - אם לא תוגדר, נשתמש ב-`RENDER_EXTERNAL_URL` שמוגדר אוטומטית ב-Render
 
 6. **לחץ "Create Web Service"**
 
@@ -73,7 +75,8 @@ git push -u origin main
 🌍 Region: oregon
 🔑 טוקן נטען בהצלחה: 123456789:A...
 🤖 בוט נוצר בהצלחה
-🎯 מתחיל polling...
+🎯 מתחיל Webhook על פורט 10000, path=/XXXXXXXXXXXXXXXXX
+🌐 Webhook URL יוגדר ל: https://<your-service>.onrender.com/XXXXXXXXXXXXXXXXX
 ```
 
 ### בדיקה 2: בטלגרם
@@ -106,6 +109,11 @@ LOG_LEVEL=INFO
 BOT_ENV=production
 TIMEZONE=Asia/Jerusalem
 DAILY_REMINDER_TIME=09:00
+```
+
+ניתן לבדוק סטטוס Webhook ידנית:
+```
+curl -s https://api.telegram.org/bot<YOUR_TOKEN>/getWebhookInfo
 ```
 
 ---
