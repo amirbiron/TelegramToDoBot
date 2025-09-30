@@ -577,13 +577,16 @@ class TodoBot:
             self.handle_message
         ))
         
-        # הגדרת תזכורת יומית לשעה 9:00
-        job_queue = self.application.job_queue
-        job_queue.run_daily(
-            self.daily_reminder,
-            time=time(hour=9, minute=0, tzinfo=TIMEZONE),
-            name='daily_reminder'
-        )
+        # הגדרת תזכורת יומית לשעה 9:00 (עם בדיקה שה-JobQueue קיים)
+        job_queue = getattr(self.application, 'job_queue', None)
+        if job_queue is None:
+            logger.warning("No JobQueue available. Install PTB with job-queue extra or check application setup.")
+        else:
+            job_queue.run_daily(
+                self.daily_reminder,
+                time=time(hour=9, minute=0, tzinfo=TIMEZONE),
+                name='daily_reminder'
+            )
 
     def run(self):
         """הרצת הבוט"""
