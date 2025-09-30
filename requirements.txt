@@ -1,7 +1,7 @@
 # ספריות נדרשות לבוט טלגרם לניהול משימות
 
 # ספריות בסיסיות
-python-telegram-bot[job-queue]==20.7
+python-telegram-bot[webhooks,job-queue]==20.7
 pytz==2023.3
 # sqlite3 נכלל ב-Python
 
