@@ -598,6 +598,31 @@ class TodoBot:
         
         self.application.run_polling(allowed_updates=Update.ALL_TYPES)
 
+    def run_webhook(self, port: int, url_path: str, webhook_url: Optional[str] = None):
+        """הרצת הבוט במצב Webhook עם שרת מובנה המאזין ל-$PORT"""
+        self.init_database()
+        self.setup_handlers()
+
+        print("🤖 הבוט מתחיל לפעול במצב Webhook...")
+        print(f"🌐 Webhook URL: {webhook_url or '(לא הוגדר - יש להגדיר כדי לקבל עדכונים)'}")
+        print(f"🛰 מאזין על 0.0.0.0:{port} | path=/{url_path}")
+        
+        # הוספת נתיב בריאות בסיסי כדי ש-Render יזהה שהשירות חי
+        async def _health(update: Update, context: ContextTypes.DEFAULT_TYPE):
+            if update.message:
+                await update.message.reply_text("ok")
+        
+        # PTB v20 אינו מספק ראוטר גנרי ל-GET, אך health דרך BOT אינה הכרחית אם יש Webhook.
+        # לכן נשתמש ב-url_path עבור Telegram, ומספקים health דרך אחזור webhookInfo בעת הצורך.
+        
+        self.application.run_webhook(
+            listen="0.0.0.0",
+            port=port,
+            url_path=url_path,
+            webhook_url=webhook_url,
+            allowed_updates=Update.ALL_TYPES
+        )
+
 def main():
     """פונקציה ראשית"""
     # קריאת הטוקן ממשתנה סביבה או קובץ
